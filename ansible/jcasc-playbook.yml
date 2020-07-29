@@ -1,0 +1,9 @@
+---
+
+- name: Run using a project directory
+  hosts: all
+  tasks:
+
+    - name: Basic debug info
+      debug:
+        msg: "The hostname is {{ ansible_hostname }} and the OS is {{ ansible_distribution  }}" 
