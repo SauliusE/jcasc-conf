@@ -34,7 +34,7 @@ resource "azurerm_public_ip" "public-ip" {
   name                = "jcasc-public-ip"
   location            = "North Europe"
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
   tags = {
     Environment = "dev"
     Project     = "jcasc-demo"
@@ -172,7 +172,7 @@ resource "null_resource" "ssh-check" {
     inline = ["echo 'Ready to work!'"]
   }
   provisioner "local-exec" {
-    command = "ansible-playbook -i ${azurerm_public_ip.public-ip.ip_address} ../ansible/jcasc-playbook.yml" 
+    command = "ansible-playbook -i 52.169.196.66, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml" 
   
   }
   
