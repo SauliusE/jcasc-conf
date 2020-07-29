@@ -172,7 +172,7 @@ resource "null_resource" "ssh-check" {
     inline = ["echo 'Ready to work!'"]
   }
   provisioner "local-exec" {
-    command = "ansible-playbook -i 52.169.196.66, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml" 
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${azurerm_public_ip.public-ip.ip_address}, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml" 
   
   }
   
