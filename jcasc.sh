@@ -94,7 +94,7 @@ if [ -z $VERSION ]; then
 fi
 
 export JCASC_VERSION=$VERSION
-export CONFIG_VERSION="$(git describe --dirty) of $(git remote show origin | grep Fetch | sed 's/.*URL: //')"
+export CONFIG_VERSION="$(git describe --dirty --always) of $(git remote show origin | grep Fetch | sed 's/.*URL: //')"
 
 set -e
 

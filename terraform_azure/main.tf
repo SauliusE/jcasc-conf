@@ -54,7 +54,19 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "*"
+    source_address_prefix      = "213.212.16.66"
+    destination_address_prefix = "*"
+  }
+  security_rule {
+    name                       = "HTTP"
+    description                = "Jenkins master HTTP port"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "8080"
+    source_address_prefix      = "213.212.16.66"
     destination_address_prefix = "*"
   }
   tags = {
@@ -163,18 +175,16 @@ resource "azurerm_linux_virtual_machine" "vm" {
 # Make sure VM is up and running and ready to accept ssh connections
 resource "null_resource" "ssh-check" {
   connection {
-      type        = "ssh"
-      user        = azurerm_linux_virtual_machine.vm.admin_username
-      host        = azurerm_public_ip.public-ip.ip_address
-      private_key = tls_private_key.jcasc-ssh.private_key_pem
-    }  
+    type        = "ssh"
+    user        = azurerm_linux_virtual_machine.vm.admin_username
+    host        = azurerm_public_ip.public-ip.ip_address
+    private_key = tls_private_key.jcasc-ssh.private_key_pem
+  }
   provisioner "remote-exec" {
     inline = ["echo 'Ready to work!'"]
   }
   provisioner "local-exec" {
-    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${azurerm_public_ip.public-ip.ip_address}, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml" 
-  
+    command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${azurerm_public_ip.public-ip.ip_address}, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml"
   }
-  
 }
 

@@ -1,9 +1,57 @@
 ---
-
 - name: Run using a project directory
   hosts: all
   tasks:
-
     - name: Basic debug info
       debug:
-        msg: "The hostname is {{ ansible_hostname }} and the OS is {{ ansible_distribution  }}" 
+        msg: "The hostname is {{ ansible_hostname }} and the OS is {{ ansible_distribution  }}"
+
+    - name: Add docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+      become: yes
+
+    - name: install required packages
+      yum:
+        name: "{{ packages }}"
+        state: installed
+      vars:
+        packages:
+          - docker-ce-19.03.12-3.el7
+          - git-1.8.3.1-23.el7_8
+      become: yes
+
+    - name: enable docker service and start it
+      systemd:
+        state: started
+        enabled: yes
+        name: docker
+      become: yes
+
+    - name: Add jcascadmin user to docker group
+      user:
+        name: jcascadmin
+        groups: docker
+        append: yes
+      become: yes
+
+    - name: Install docker-compose
+      get_url:
+        url: https://github.com/docker/compose/releases/download/1.26.2/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: "u+x,g+x,o+x"
+      become: yes
+
+    - name: Download jcasc-ref on target
+      git:
+        repo: https://github.com/SauliusE/jcasc-conf.git
+        dest: /home/jcascadmin/jcasc-conf
+        # version: <tag> Uncomment and provide tag for specific version of repository
+
+    - name: Create jcasc-home directory if it doesn't exist
+      file:
+        path: /home/jcascadmin/jcasc-home
+        state: directory
+        mode: "0755"
+    # - name: Run bash script to get jcasc-conf running

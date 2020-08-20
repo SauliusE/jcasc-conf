@@ -7,7 +7,8 @@ services:
       options:
         max-file: "3"
         max-size: "10m"
-    image: praqma/jcasc:${JCASC_VERSION:-latest}
+    # image: praqma/jcasc:${JCASC_VERSION:-latest}
+    build: ./jenkins/master
     ports:
       - 50000:50000
       - 8080:8080
@@ -23,7 +24,8 @@ services:
       - JENKINS_HOST=$HOSTNAME
 
   agent:
-    image: praqma/jcasc-agent:${JCASC_VERSION:-latest}
+    #image: praqma/jcasc-agent:${JCASC_VERSION:-latest}
+    build: ./jenkins/agent
     restart: unless-stopped
     logging:
       driver: "json-file"
