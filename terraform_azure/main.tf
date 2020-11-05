@@ -54,7 +54,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "213.212.16.66"
+    source_address_prefix      = "98.128.167.55"
     destination_address_prefix = "*"
   }
   security_rule {
@@ -66,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "8080"
-    source_address_prefix      = "213.212.16.66"
+    source_address_prefix      = "98.128.167.55"
     destination_address_prefix = "*"
   }
   tags = {
@@ -183,8 +183,9 @@ resource "null_resource" "ssh-check" {
   provisioner "remote-exec" {
     inline = ["echo 'Ready to work!'"]
   }
+}
+resource "null_resource" "run-ansible" {
   provisioner "local-exec" {
     command = "ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ${azurerm_public_ip.public-ip.ip_address}, --private-key jcasc_id_rsa -u jcascadmin ../ansible/jcasc-playbook.yml"
   }
 }
-

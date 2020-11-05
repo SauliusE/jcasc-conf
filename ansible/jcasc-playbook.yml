@@ -51,7 +51,17 @@
 
     - name: Create jcasc-home directory if it doesn't exist
       file:
-        path: /home/jcascadmin/jcasc-home
+        path: /home/jcascadmin/jcasc-conf
         state: directory
         mode: "0755"
-    # - name: Run bash script to get jcasc-conf running
+      
+    - name: Make script executablex
+      file: 
+        path: /home/jcascadmin/jcasc-conf/jcasc.sh
+        mode: "mode=a+x"
+
+    - name: Run bash script to get jcasc-conf running
+      shell: ./jcasc.sh up
+      args:
+        chdir: /home/jcascadmin/jcasc-conf
+
